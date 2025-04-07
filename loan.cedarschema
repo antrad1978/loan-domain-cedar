@@ -1,0 +1,109 @@
+namespace LoanPlatform {
+    entity Group;
+    entity Customer {
+        KYC: Bool,
+        emailValidate: Bool,
+        phoneNumberValidate: Bool,
+        enabled: Bool,
+        username: String,
+        owner: String
+    };
+    entity LoanRequest{
+        owner: String,
+        officer: String
+    };
+    entity User in [Group]{
+        enabled: Bool,
+        username: String,
+        roles: Set<String>
+    };
+    entity Document  = {
+        isPrivate: Bool, 
+        owner: User,
+        publicAccess: Bool,
+    };
+    entity AIAgent = {
+        identity: String,
+    };
+    entity Loan = {
+        customer: String,
+        officer: String,
+        viewers: Set<User>,
+        editors: Set<User>,
+    };
+    action Enable, KYCready appliesTo {
+        principal: [Customer, User],
+        resource: [Customer],
+        context: {
+            
+            }
+    };
+    action DeleteGroup, ModifyGroup appliesTo {
+        principal: [User],
+        resource: [Group],
+        context: {}
+    };
+
+    action SubmitLoanRequest appliesTo {
+        principal: [Customer],
+        resource: [LoanRequest],
+        context: {}
+    };
+
+    action SetLoyalty appliesTo {
+        principal: [User],
+        resource: [Customer],
+        context: {}
+    };
+
+    action ValidationAIBased appliesTo {
+        principal: [AIAgent],
+        resource: [LoanRequest],
+        context: {}
+    };
+
+    action ChangeLoanRequestStatus appliesTo {
+        principal: [User],
+        resource: [LoanRequest],
+        context: {
+            "currentTime": Long,
+            "sourceIp": ipaddr
+        }
+    };
+
+    action Create
+        appliesTo {
+            principal: [Customer, User],
+            resource: [LoanRequest, User],
+            context: {
+
+            }
+    };
+
+    action CreateUser, EditUser,DeleteUser
+        appliesTo {
+            principal: [User],
+            resource: [User],
+            context: {
+                sourceIp: ipaddr
+            }
+    };
+
+    action EditCustomer
+        appliesTo {
+            principal: [User],
+            resource: [Customer],
+            context: {
+                sourceIp: ipaddr
+            }
+    };
+
+    action Pay
+        appliesTo {
+            principal: [Customer],
+            resource: [Loan],
+            context: {
+                
+            }
+    };
+}
